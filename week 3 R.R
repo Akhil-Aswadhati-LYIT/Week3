@@ -58,10 +58,11 @@ new_managers <- na.omit(managers)
 new_managers 
 
 
-# use coplete cases to show rows where data is available
+# use complete cases to show rows where data is available
 complete_data <- complete.cases(managers)
 complete_data
 sum(complete_data)
+
 
 # listing rows without missing values
 
@@ -70,5 +71,40 @@ complete_data <- managers[complete.cases(managers),] # ',' at the end means that
 
 complete_data
 
+# listing rows with missing values
+managers[!complete.cases(managers),]
+
 # sum of all missing values in the age column
 sum(is.na(managers$Age))
+
+# use md.pattern() function in mice package t show tabulated missing data pattern
+install.packages("mice")
+library(mice)
+md.pattern(managers)
+
+# VIM package includes aggr() function that shows missing values for each variable and its -
+# - combinatios
+
+install.packages("VIM")
+library(VIM)
+
+missing_values <- aggr(managers, prop = FALSE, numbers = TRUE)
+missing_values
+summary(missing_values)
+
+
+# matrix plot shows missing data coded in red
+matrixplot(managers, xlab = "Item", ylab = "Index", 
+           main = "Identify missing values in the Dataset")
+
+missing_value_relationship <- data.frame(is.na(managers))
+missing_value_relationship
+
+missing_value_logical <- data.frame(abs(is.na(managers)))
+missing_value_logical
+correlation_matrix <- missing_value_logical[(apply(missing_value_logical, 2, sum) > 0)]
+correlation_matrix
+
+# show correlation matrix btw extracted values
+# 1 = perfect +ve correlation, -1 = perfect -ve correlation, 0 = no correlation
+cor(correlation_matrix)
